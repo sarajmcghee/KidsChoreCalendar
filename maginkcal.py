@@ -1,45 +1,29 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-This project is designed for the WaveShare 12.48" eInk display. Modifications will be needed for other displays,
-especially the display drivers and how the image is being rendered on the display. Also, this is the first project that
-I posted on GitHub so please go easy on me. There are still many parts of the code (especially with timezone
-conversions) that are not tested comprehensively, since my calendar/events are largely based on the timezone I'm in.
-There will also be work needed to adjust the calendar rendering for different screen sizes, such as modifying of the
-CSS stylesheets in the "render" folder.
-"""
-import datetime as dt
-import sys
-
-from pytz import timezone
-from gcal.gcal import GcalHelper
-from render.render import RenderHelper
-from power.power import PowerHelper
 import json
 import logging
+import sys
+import datetime as dt
+from render.render import RenderHelper
+#from display.display import DisplayHelper  # Ensure you have the correct import for DisplayHelper
+from pytz import timezone
+from gcal.gcal import GcalHelper
+from power.power import PowerHelper
+import os
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+from PIL import Image
+from display.epd7in5_V2 import EPD  # Replace with your display's driver
+
+def refresh_token(credentials_path):
+    creds = Credentials.from_authorized_user_file(credentials_path)
+    if creds and creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+        with open(credentials_path, 'w') as token:
+            token.write(creds.to_json())
+    return creds
+
 
 
 def main():
-    # Basic configuration settings (user replaceable)
-    configFile = open('config.json')
-    config = json.load(configFile)
-
-    displayTZ = timezone(config['displayTZ']) # list of timezones - print(pytz.all_timezones)
-    thresholdHours = config['thresholdHours']  # considers events updated within last 12 hours as recently updated
-    maxEventsPerDay = config['maxEventsPerDay']  # limits number of events to display (remainder displayed as '+X more')
-    isDisplayToScreen = config['isDisplayToScreen']  # set to true when debugging rendering without displaying to screen
-    isShutdownOnComplete = config['isShutdownOnComplete']  # set to true to conserve power, false if in debugging mode
-    batteryDisplayMode = config['batteryDisplayMode']  # 0: do not show / 1: always show / 2: show when battery is low
-    weekStartDay = config['weekStartDay']  # Monday = 0, Sunday = 6
-    dayOfWeekText = config['dayOfWeekText'] # Monday as first item in list
-    screenWidth = config['screenWidth']  # Width of E-Ink display. Default is landscape. Need to rotate image to fit.
-    screenHeight = config['screenHeight']  # Height of E-Ink display. Default is landscape. Need to rotate image to fit.
-    imageWidth = config['imageWidth']  # Width of image to be generated for display.
-    imageHeight = config['imageHeight'] # Height of image to be generated for display.
-    rotateAngle = config['rotateAngle']  # If image is rendered in portrait orientation, angle to rotate to fit screen
-    calendars = config['calendars']  # Google calendar ids
-    is24hour = config['is24h']  # set 24 hour time
-
     # Create and configure logger
     logging.basicConfig(filename="logfile.log", format='%(asctime)s %(levelname)s - %(message)s', filemode='a')
     logger = logging.getLogger('maginkcal')
@@ -48,12 +32,53 @@ def main():
     logger.info("Starting daily calendar update")
 
     try:
+        # Load configuration from config.json
+        config_path = os.path.join(os.path.dirname(__file__), 'config.json')
+        logger.info(f"Loading configuration from {config_path}")
+        
+        # Debugging: Check if the file exists
+        if not os.path.exists(config_path):
+            logger.error(f"Configuration file {config_path} does not exist.")
+            sys.exit(1)
+        
+        with open(config_path, 'r') as config_file:
+            config = json.load(config_file)
+        logger.info(f"Made it here configuration from {config_path}")
+
+        # Extract values from the configuration
+        displayTZ = timezone(config['displayTZ'])
+        thresholdHours = config['thresholdHours']
+        maxEventsPerDay = config['maxEventsPerDay']
+        isDisplayToScreen = config['isDisplayToScreen']
+        isShutdownOnComplete = config['isShutdownOnComplete']
+        batteryDisplayMode = config['batteryDisplayMode']
+        weekStartDay = config['weekStartDay']
+        dayOfWeekText = config['dayOfWeekText']
+        screenWidth = config['screenWidth']
+        screenHeight = config['screenHeight']
+        imageWidth = config['imageWidth']
+        imageHeight = config['imageHeight']
+        rotateAngle = config['rotateAngle']
+        is24hour = config['is24h']
+        calendars = config['calendars']
+        logger.info(f"Made it hereerereerer Loading configuration from {config_path}")
+
+          # Initialize e-paper display
+        epd = EPD()
+        epd.init()
+        epd.Clear()
+        logger.info("E-paper display initialized successfully.")
+
         # Establish current date and time information
-        # Note: For Python datetime.weekday() - Monday = 0, Sunday = 6
-        # For this implementation, each week starts on a Sunday and the calendar begins on the nearest elapsed Sunday
-        # The calendar will also display 5 weeks of events to cover the upcoming month, ending on a Saturday
+        logger.info("Initializing PowerHelper")
         powerService = PowerHelper()
+        logger.info("PowerHelper initialized")
+
+        logger.info("Syncing time with PowerHelper")
         powerService.sync_time()
+        logger.info("Time synced with PowerHelper")
+
+        logger.info("Getting battery level from PowerHelper")
         currBatteryLevel = powerService.get_battery()
         logger.info('Battery level at start: {:.3f}'.format(currBatteryLevel))
 
@@ -64,6 +89,7 @@ def main():
         calEndDate = calStartDate + dt.timedelta(days=(5 * 7 - 1))
         calStartDatetime = displayTZ.localize(dt.datetime.combine(calStartDate, dt.datetime.min.time()))
         calEndDatetime = displayTZ.localize(dt.datetime.combine(calEndDate, dt.datetime.max.time()))
+
 
         # Using Google Calendar to retrieve all events within start and end date (inclusive)
         start = dt.datetime.now()
@@ -77,36 +103,38 @@ def main():
                    'dayOfWeekText': dayOfWeekText, 'weekStartDay': weekStartDay, 'maxEventsPerDay': maxEventsPerDay,
                    'is24hour': is24hour}
 
-        renderService = RenderHelper(imageWidth, imageHeight, rotateAngle)
-        calBlackImage, calRedImage = renderService.process_inputs(calDict)
+        # Instantiate RenderHelper with the configuration values
+        render_helper = RenderHelper(imageWidth, imageHeight, rotateAngle)
+        calBlackImage, calRedImage = render_helper.process_inputs(calDict)
+        calBlackImage.save("blackimg.png")
+        calRedImage.save("redimg.png")
+        logger.info("Rendered calendar images saved for verification.")
+
+        if calBlackImage.size != (epd.width, epd.height):
+            logger.info("Resizing image to match e-paper resolution...")
+            calBlackImage = calBlackImage.resize((epd.width, epd.height))
+        calBlackImage = calBlackImage.convert('1')  # Convert to 1-bit black-and-white mode
 
         if isDisplayToScreen:
-            from display.display import DisplayHelper
-            displayService = DisplayHelper(screenWidth, screenHeight)
-            if currDate.weekday() == weekStartDay:
+            buffer = epd.getbuffer(calBlackImage)
+            epd.display(buffer)
+            #if currDate.weekday() == weekStartDay:
                 # calibrate display once a week to prevent ghosting
-                displayService.calibrate(cycles=0)  # to calibrate in production
-            displayService.update(calBlackImage, calRedImage)
-            displayService.sleep()
+                #displayService.calibrate(cycles=0)  # to calibrate in production
+        logger.info("Calendar image displayed successfully.")
+
+        # Put the display to sleep
+        epd.sleep()
+        logger.info("E-paper display put to sleep.")
 
         currBatteryLevel = powerService.get_battery()
         logger.info('Battery level at end: {:.3f}'.format(currBatteryLevel))
+        # Check if configured to shutdown safely
+        logger.info("Checking if configured to shutdown safely - Current hour: {}".format(currDatetime.hour))
 
     except Exception as e:
-        logger.error(e)
+        logger.error("An error occurred: {}".format(e))
+        sys.exit(1)
 
-    logger.info("Completed daily calendar update")
-
-    logger.info("Checking if configured to shutdown safely - Current hour: {}".format(currDatetime.hour))
-    if isShutdownOnComplete:
-        # implementing a failsafe so that we don't shutdown when debugging
-        # checking if it's 6am in the morning, which is the time I've set PiSugar to wake and refresh the calendar
-        # if it is 6am, shutdown the RPi. if not 6am, assume I'm debugging the code, so do not shutdown
-        if currDatetime.hour == 6:
-            logger.info("Shutting down safely.")
-            import os
-            os.system("sudo shutdown -h now")
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

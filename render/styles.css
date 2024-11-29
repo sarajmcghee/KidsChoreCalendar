@@ -146,18 +146,19 @@ Calendar Styling */
 }
 
 .datecircle {
-    margin: 0rem auto;
-    width:4rem;
-    height:4rem;
-    border-radius:2rem;
-    font-family: "Quattrocento-Regular";
-    font-size:3rem;
-    color:white;
-    line-height: 4rem;
-    text-align:center;
-    vertical-align: middle;
-    background:#ff0000;
+  margin: 0rem auto;
+  width: 3rem; /* Reduced from 4rem */
+  height: 3rem; /* Reduced from 4rem */
+  border-radius: 1.5rem; /* Adjusted to match smaller size */
+  font-size: 2rem; /* Reduced from 3rem */
+  line-height: 3rem; /* Match the new height */
+  text-align: center;
+  vertical-align: middle;
+  background: #ff0000; /* Red color remains the same */
+  font-family: "Quattrocento-Regular";
+  color: white;
 }
+
 
 .calendar .days li .event {
   font-size: 1rem;
