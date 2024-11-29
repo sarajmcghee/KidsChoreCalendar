@@ -106,4 +106,5 @@ Honestly, the cost of this project is way too high for a single purpose device. 
 
 **Edit (Apr 2023)**: So after finishing up this project, I went on to build an E-Ink Dashboard that offers rich, timely and glanceable information pulled from Google Calendar, OpenWeatherMap and ChatGPT! Find out more over at: https://github.com/speedyg0nz/MagInkDash
 #   C h o r e C a l e n d a r  
+ #   C h o r e C a l e n d a r  
  
