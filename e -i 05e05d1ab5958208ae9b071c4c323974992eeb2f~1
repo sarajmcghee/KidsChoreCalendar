@@ -1,0 +1,274 @@
+[33mcommit 94031495111a2be533d831a2d772303d496f2d1b[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Sara McGhee <sarajmcghee@gmail.com>
+Date:   Fri Nov 29 17:01:31 2024 -0500
+
+    Correction for different Screen Size and removal of Selenium
+
+[33mcommit 785aac38401484569b3222edecccead4ef8a0681[m
+Author: Sara McGhee <sarajmcghee@gmail.com>
+Date:   Fri Nov 29 17:15:13 2024 -0500
+
+    Remove token.json and add to .gitignore
+
+[33mcommit 0c078a55d59fef50b60dfbc55d6ea05e2d9f36b2[m
+Author: Sara McGhee <sarajmcghee@gmail.com>
+Date:   Fri Nov 29 17:10:25 2024 -0500
+
+    Remove token.json and add to .gitignore
+
+[33mcommit 97aef6ecb77c9f5069fb9f8f4bd53aff136ef4d4[m
+Author: Sara McGhee <sarajmcghee@gmail.com>
+Date:   Fri Nov 29 17:05:22 2024 -0500
+
+    Intiial commit
+    
+            deleted:    gcal/token.json
+
+[33mcommit 68f778f3f79943cbf0821c33ac90f146eed1f5cc[m
+Author: Sara McGhee <sarajmcghee@gmail.com>
+Date:   Fri Nov 29 17:01:31 2024 -0500
+
+    Correction for different Screen Size and removal of Selenium
+
+[33mcommit 05e05d1ab5958208ae9b071c4c323974992eeb2f[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Sara McGhee <sarajmcghee@gmail.com>
+Date:   Fri Nov 29 16:18:47 2024 -0500
+
+    first commit
+
+[33mcommit 52b28b5d4c2593f94f4aba6013676b6f987028c1[m
+Author: Sara McGhee <sarajmcghee@gmail.com>
+Date:   Fri Nov 29 16:18:19 2024 -0500
+
+    first commit
+
+[33mcommit b2330621082f531d1f956183eedb9111c7dbf789[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Thu Apr 13 18:21:07 2023 +0800
+
+    Update README.md
+
+[33mcommit 1cf7dd14d9b05431d16fd517082daf354c3ebffe[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Thu Mar 2 22:45:13 2023 +0800
+
+    Add files via upload
+
+[33mcommit 6450205c91f0e72428d7945a5d51fe93469ca389[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Thu Mar 2 21:40:57 2023 +0800
+
+    Add files via upload
+    
+    Updated Waveshare driver files for epaper display
+
+[33mcommit c45ba3c56ebdcc7eca6d0eb5a41b04fac5098141[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Thu Mar 2 21:39:54 2023 +0800
+
+    Update README.md
+    
+    Fixed typo
+
+[33mcommit e7ed040a543181b35a5069893fe255cbfac0dbbb[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Thu Mar 2 21:38:43 2023 +0800
+
+    Update README.md
+    
+    Updated instructions for known compatibility issues for the original Raspberry Pi Zero running the latest "bullseye" OS version.
+
+[33mcommit 40dcd100f33fe81e3b85a0fb4a6fa77b1d572736[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Thu Mar 2 21:32:05 2023 +0800
+
+    Update render.py
+    
+    Update code to deal with deprecated Selenium function
+
+[33mcommit 0c258d24bf7c8ff188ec87f504dd0f6f44ed7af6[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Tue Nov 22 23:40:47 2022 +0800
+
+    Update README.md
+    
+    Updated hardware availability information (E-Ink display and PiSugar3)
+
+[33mcommit 6c70d07ecbe8835d22d49875755696b767f9fd48[m
+Merge: d09a913 39dc8c1
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Wed Oct 6 22:25:22 2021 +0800
+
+    Merge pull request #10 from speedyg0nz/testing
+    
+    Merge event sorting changes, minor code optimization and remove redundant code
+
+[33mcommit 39dc8c1fb1f89cbb46da3c1167cb979aae7dd29d[m
+Author: speedyg0nz <chongwee.dev@gmail.com>
+Date:   Wed Oct 6 22:22:56 2021 +0800
+
+    Merge event sorting changes, minor code optimization and remove redundant code
+
+[33mcommit 11d13afbac9ab69a91218ecafd9a457801a943a6[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Mon Sep 27 18:40:52 2021 +0200
+
+    add handler to print logger to stdout for fast "debug"
+
+[33mcommit 52091ba5504c5a9d972a2c469b7757c0a1eebc53[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Mon Sep 27 18:39:32 2021 +0200
+
+    remove 0 in front of hour 9:00 is better then 09:00 and use format for all the function
+
+[33mcommit f4fc4c748c6dece579cad3e510cd353464ccdf60[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Mon Sep 27 18:38:37 2021 +0200
+
+    Sort event by hour, do something better
+
+[33mcommit ce392ef6b58f96671e5b74199cc9cc7760701d79[m
+Merge: b052b5e d09a913
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Mon Sep 27 17:29:00 2021 +0200
+
+    Merge branch 'speedyg0nz:main' into main
+
+[33mcommit d09a913da33a145e415244101500d913a4e98671[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Mon Sep 27 15:38:16 2021 +0800
+
+    Update README.md
+
+[33mcommit 606e6f9beca285114e31c3bc47d9f9706e14f26e[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Mon Sep 27 14:39:52 2021 +0800
+
+    Delete .idea directory
+
+[33mcommit 0c424121d80bdba040e9f2da8f641c77905f726a[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Mon Sep 27 14:39:37 2021 +0800
+
+    Delete .DS_Store
+
+[33mcommit 761c83ad9b1dcba808e91d0108e7230c18dd8927[m
+Merge: 2d967d7 32fdfcf
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Mon Sep 27 14:38:02 2021 +0800
+
+    Merge pull request #2 from speedyg0nz/testing
+    
+    Merged changes
+
+[33mcommit 32fdfcfd77d2ab9468fdbe1cc354df3fb180d9fe[m
+Author: speedyg0nz <chongwee.dev@gmail.com>
+Date:   Mon Sep 27 14:20:47 2021 +0800
+
+    Merged emagra's commits, added missing files, removed unneeded ones, and amended chromedriver window resizing code to work on Mac for testing
+
+[33mcommit 6cac6d359e758bfcfd7fab6016fa659b6d4a5cc5[m
+Merge: c7a55ca 2d967d7
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Sat Sep 25 17:49:57 2021 +0200
+
+    Merge branch 'speedyg0nz:main' into main
+
+[33mcommit b052b5e922c91ca1f15f47251091cd11f5bb9877[m
+Merge: c7a55ca 2d967d7
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Sat Sep 25 17:49:57 2021 +0200
+
+    Merge branch 'speedyg0nz:main' into main
+
+[33mcommit 2d967d72596febb38eadc86ed46ad4ecc8b0216d[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Sat Sep 25 22:45:12 2021 +0800
+
+    Update README.md
+
+[33mcommit c7a55cacfe381b02646fdb3058a5f1ca04a46fa2[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Sat Sep 25 16:24:42 2021 +0200
+
+    fix hiding battery and move more html in html file
+
+[33mcommit 5e6b63518e6f7203ea6b8b35a8c6e00016626c58[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Sat Sep 25 12:52:57 2021 +0200
+
+    restored asd
+
+[33mcommit 4a406dcd7470733170ddce0d9223200822aec755[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Sat Sep 25 12:49:16 2021 +0200
+
+    Use something like template for code html separation. Early stage.
+
+[33mcommit b7bdb9c8631913a87330ddd81eeb720701e19784[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Sat Sep 25 12:43:55 2021 +0200
+
+    Add 12/24 hour by settings
+
+[33mcommit e96bb3a55af82c2023fbe124bf9e9fb948796ce8[m
+Author: Emanuele Grande <ema.grandem@gmail.com>
+Date:   Sat Sep 25 12:34:41 2021 +0200
+
+    Multiple calendar, add ids in config.json
+
+[33mcommit 78b81080d213ada4cc287fa6ac7b514ceba1177a[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Sat Sep 25 09:02:20 2021 +0800
+
+    Update README.md
+
+[33mcommit 83e1446b85898c720fded9ef5884ad784dd63aaa[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Sat Sep 25 09:01:40 2021 +0800
+
+    Update README.md
+
+[33mcommit c965dc56c11f0ed4173204c499c9239d55fcf4cb[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Sat Sep 25 08:50:37 2021 +0800
+
+    Update README.md
+
+[33mcommit 2558ae1e43fcd8736f1e1c978e966d2984622888[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Fri Sep 24 18:39:25 2021 +0800
+
+    Update README.md
+
+[33mcommit 389a5f4e2e5f8065be69eed8ec8bc08d0879aa93[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Fri Sep 24 17:46:36 2021 +0800
+
+    Update README.md
+
+[33mcommit c4c5e011803710ed28de5ca25738607f75f0e149[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Fri Sep 24 17:41:47 2021 +0800
+
+    Update README.md
+
+[33mcommit bffbeb46fbfcaabbe1234d5020d363a23f264d1f[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Fri Sep 24 15:52:19 2021 +0800
+
+    Update README.md
+
+[33mcommit c17b3d6f30ba6a994e33731bc5effc8d5f1565c9[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Fri Sep 24 12:53:54 2021 +0800
+
+    Update README.md
+
+[33mcommit c1dd3ecaf1bbd5a861802d40e37243262b39b20f[m
+Author: speedyg0nz <chongwee@gmail.com>
+Date:   Fri Sep 24 12:41:53 2021 +0800
+
+    Update README.md
+
+[33mcommit c
