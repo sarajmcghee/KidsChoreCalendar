@@ -105,3 +105,5 @@ If this project has helped you in any way, do buy me a coffee so I can continue 
 Honestly, the cost of this project is way too high for a single purpose device. Personally, I've been looking at E-Ink tablets that emulate the experience of writing on paper, and allow the users to take notes on the go. Those familiar with this range of products would be aware of the reMarkable tablet, Ratta Supernote, Kobo Elipsa and many others. My next project is likely to enhance one of these devices such that the calendar will be displayed when it's not in use. While this is usually possible by manually setting the sleep screen image / screensaver, I'm looking to have the screensaver updated automatically on a daily basis, like how it was done in this project.
 
 **Edit (Apr 2023)**: So after finishing up this project, I went on to build an E-Ink Dashboard that offers rich, timely and glanceable information pulled from Google Calendar, OpenWeatherMap and ChatGPT! Find out more over at: https://github.com/speedyg0nz/MagInkDash
+#   C h o r e C a l e n d a r  
+ 
