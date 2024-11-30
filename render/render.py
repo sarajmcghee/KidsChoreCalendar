@@ -7,7 +7,7 @@ to extract grayscale and red portions, which are then sent to the eInk display.
 """
 
 import imgkit
-from datetime import timedelta
+from datetime import datetime, timedelta
 from PIL import Image
 import pathlib
 import logging
@@ -22,6 +22,8 @@ class RenderHelper:
         self.imageWidth = width
         self.imageHeight = height
         self.rotateAngle = angle
+        self.TodayEvent_List = []
+
 
     def get_screenshot(self):
         """
@@ -101,6 +103,9 @@ class RenderHelper:
                 idx = self.get_day_in_cal(calDict['calStartDate'], event['endDatetime'].date())
                 if idx < len(calList):
                     calList[idx].append(event)
+        # Filter today's events
+        today = calDict['today']  # Already a date object, no need for .date()
+        self.TodayEvent_List = [event for event in calDict['events'] if event['startDatetime'].date() == today]
 
         # Read HTML template
         with open(self.currPath + '/calendar_template.html', 'r') as file:
@@ -133,10 +138,18 @@ class RenderHelper:
                 cal_events_text += f'<div class="event text-muted">{len(day_events) - maxEventsPerDay} more</div>\n'
             cal_events_text += '</li>\n'
 
+        # Generate HTML for today's events
+        today_events_text = ''
+        for event in self.TodayEvent_List:
+            today_events_text += f'<div class="event">{event["summary"]}</div>\n'
+
         # Write calendar HTML
         with open(self.currPath + '/calendar.html', 'w') as htmlFile:
             htmlFile.write(calendar_template.format(
-                month=month_name, battText=battText, dayOfWeek=cal_days_of_week, events=cal_events_text))
+                TodayEvent=today_events_text, battText=battText, dayOfWeek=cal_days_of_week, events=cal_events_text))
+         
+        self.logger.info("Today's events: {today_events_text}")   
+
 
         # Render HTML to images
         calBlackImage, calRedImage = self.get_screenshot()

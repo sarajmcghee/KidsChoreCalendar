@@ -1,115 +1,64 @@
-import json
-import logging
-import sys
-import datetime as dt
-from render.render import RenderHelper
-# from display.display import DisplayHelper  # Ensure you have the correct import for DisplayHelper
-from pytz import timezone
-from gcal.gcal import GcalHelper
-from power.power import PowerHelper
-import os
-from google.oauth2.credentials import Credentials
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Run this script first to obtain the token. Credentials.json must be in the same folder first.
+To obtain Credentials.json, follow the instructions listed in the following link.
+https://developers.google.com/calendar/api/quickstart/python
+"""
+
+from __future__ import print_function
+import datetime
+import pickle
+import os.path
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-def refresh_token(credentials_path):
-    creds = Credentials.from_authorized_user_file(credentials_path)
-    if creds and creds.expired and creds.refresh_token:
-        creds.refresh(Request())
-        with open(credentials_path, 'w') as token:
-            token.write(creds.to_json())
-    return creds
+# If modifying these scopes, delete the file token.pickle.
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+
 
 def main():
-    # Create and configure logger
-    logging.basicConfig(filename="logfile.log", format='%(asctime)s %(levelname)s - %(message)s', filemode='a')
-    logger = logging.getLogger('maginkcal')
-    logger.addHandler(logging.StreamHandler(sys.stdout))  # print logger to stdout
-    logger.setLevel(logging.INFO)
-    logger.info("Starting daily calendar update")
+    """Shows basic usage of the Google Calendar API.
+    Prints the start and name of the next 10 events on the user's calendar.
+    """
+    creds = None
+    # The file token.pickle stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.pickle'):
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
 
-    try:
-        # Load configuration from config.json
-        config_path = r'C:\Users\Sara\Desktop\MagInkCal\config.json'
-        logger.info(f"Loading configuration from {config_path}")
-        
-        # Debugging: Check if the file exists
-        if not os.path.exists(config_path):
-            logger.error(f"Configuration file {config_path} does not exist.")
-            sys.exit(1)
-        
-        with open(config_path, 'r') as config_file:
-            config = json.load(config_file)
-        logger.info(f"Made it here configuration from {config_path}")
+    service = build('calendar', 'v3', credentials=creds)
 
-        # Extract values from the configuration
-        displayTZ = timezone(config['displayTZ'])
-        thresholdHours = config['thresholdHours']
-        maxEventsPerDay = config['maxEventsPerDay']
-        isDisplayToScreen = config['isDisplayToScreen']
-        isShutdownOnComplete = config['isShutdownOnComplete']
-        batteryDisplayMode = config['batteryDisplayMode']
-        weekStartDay = config['weekStartDay']
-        dayOfWeekText = config['dayOfWeekText']
-        screenWidth = config['screenWidth']
-        screenHeight = config['screenHeight']
-        imageWidth = config['imageWidth']
-        imageHeight = config['imageHeight']
-        rotateAngle = config['rotateAngle']
-        is24hour = config['is24h']
-        calendars = config['calendars']
-        logger.info(f"Made it hereerereerer Loading configuration from {config_path}")
+    # Call the Calendar API
+    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+    print('Getting the upcoming 10 events')
+    events_result = service.events().list(calendarId='primary', timeMin=now,
+                                        maxResults=10, singleEvents=True,
+                                        orderBy='startTime').execute()
+    events = events_result.get('items', [])
 
-        # Establish current date and time information
-        logger.info("Initializing PowerHelper")
-        powerService = PowerHelper()
-        logger.info("PowerHelper initialized")
+    if not events:
+        print('No upcoming events found.')
+    for event in events:
+        start = event['start'].get('dateTime', event['start'].get('date'))
+        end = event['end'].get('dateTime', event['start'].get('date'))
+        updated = event['updated']
+        print(start + " | " + end + " | " + updated + " | " + event['summary'])
 
-        logger.info("Syncing time with PowerHelper")
-        powerService.sync_time()
-        logger.info("Time synced with PowerHelper")
-
-        logger.info("Getting battery level from PowerHelper")
-        currBatteryLevel = powerService.get_battery()
-        logger.info('Battery level at start: {:.3f}'.format(currBatteryLevel))
-
-        currDatetime = dt.datetime.now(displayTZ)
-        logger.info("Time synchronised to {}".format(currDatetime))
-        currDate = currDatetime.date()
-        calStartDate = currDate - dt.timedelta(days=((currDate.weekday() + (7 - weekStartDay)) % 7))
-        calEndDate = calStartDate + dt.timedelta(days=(5 * 7 - 1))
-        calStartDatetime = displayTZ.localize(dt.datetime.combine(calStartDate, dt.datetime.min.time()))
-        calEndDatetime = displayTZ.localize(dt.datetime.combine(calEndDate, dt.datetime.max.time()))
-
-        # Refresh Google Calendar API token
-        credentials_path = r'C:\Users\Sara\Desktop\MagInkCal\token.json'
-        creds = refresh_token(credentials_path)
-
-        # Using Google Calendar to retrieve all events within start and end date (inclusive)
-        start = dt.datetime.now()
-        gcalService = GcalHelper(creds)
-        eventList = gcalService.retrieve_events(calendars, calStartDatetime, calEndDatetime, displayTZ, thresholdHours)
-        logger.info("Calendar events retrieved in " + str(dt.datetime.now() - start))
-
-        # Populate dictionary with information to be rendered on e-ink display
-        calDict = {'events': eventList, 'calStartDate': calStartDate, 'today': currDate, 'lastRefresh': currDatetime, 'batteryLevel': currBatteryLevel}
-
-        # Instantiate RenderHelper with the configuration values
-        render_helper = RenderHelper(imageWidth, imageHeight, rotateAngle)
-
-        # Instantiate DisplayHelper with the configuration values
-        # display_helper = DisplayHelper(screenWidth, screenHeight)
-
-        # Use render_helper and display_helper to perform rendering and display tasks
-        # For example:
-        # render_helper.render_calendar(calDict)
-        # display_helper.update(blackimg, redimg)
-
-        # Check if configured to shutdown safely
-        logger.info("Checking if configured to shutdown safely - Current hour: {}".format(currDatetime.hour))
-
-    except Exception as e:
-        logger.error("An error occurred: {}".format(e))
-        sys.exit(1)
 
 if __name__ == '__main__':
     main()

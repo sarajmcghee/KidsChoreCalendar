@@ -103,7 +103,6 @@ class GcalHelper:
         events = []
         for eve in events_result:
             events += eve.get('items', [])
-            # events = events_result.get('items', [])
 
         if not events:
             self.logger.info('No upcoming events found.')
@@ -132,6 +131,5 @@ class GcalHelper:
             eventList.append(newEvent)
 
         # We need to sort eventList because the event will be sorted in "calendar order" instead of hours order
-        # TODO: improve because of double cycle for now is not much cost
         eventList = sorted(eventList, key=lambda k: k['startDatetime'])
         return eventList

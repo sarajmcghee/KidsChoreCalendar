@@ -95,14 +95,14 @@ Calendar Styling */
 }
 
 .month {
-  font-size: 13rem;
+  font-size: 3rem;
   font-family: "Quattrocento-Regular";
 }
 
 @media (min-width: 992px) {
   .month {
-    font-size: 13rem;
-    line-height: 13rem;
+    font-size: 3rem;
+    line-height: 3rem;
     font-family: "Quattrocento-Regular";
   }
 }
